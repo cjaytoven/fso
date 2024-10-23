@@ -8,17 +8,25 @@ const Button = (props) => (
   </button>
 )
 
+const StatisticLine = (props) => {
+  return(
+    <>
+      {props.text} {props.value}{<br/>}
+    </>
+  )
+}
+
 const Stastics = (props) => {
   const count = props.feedbackGood + props.feedbackNeutral + props.feedbackBad
   if (count > 0) return(
-    <p>
-      Good {props.feedbackGood}{<br/>}
-      Neutral {props.feedbackNeutral}{<br/>}
-      Bad {props.feedbackBad}{<br/>}
-      All {count}{<br/>}
-      Average {(props.feedbackGood - props.feedbackBad) / count}{<br/>}
-      Positive {props.feedbackGood / count * 100}%
-    </p>
+    <div>
+      <StatisticLine text="Good" value ={props.feedbackGood}/>
+      <StatisticLine text="Neutral" value ={props.feedbackNeutral}/>
+      <StatisticLine text="Bad" value ={props.feedbackBad}/>
+      <StatisticLine text="All" value ={props.count}/>
+      <StatisticLine text="Average" value ={(props.feedbackGood - props.feedbackBad) / count}/>
+      <StatisticLine text="Positive" value ={props.feedbackGood / count * 100 + '%'}/>
+    </div>
   )
   return(
     <p>
