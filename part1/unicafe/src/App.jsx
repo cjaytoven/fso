@@ -8,7 +8,7 @@ const Button = (props) => (
   </button>
 )
 
-const Feedback = (props) => {
+const Stastics = (props) => {
   const count = props.feedbackGood + props.feedbackNeutral + props.feedbackBad
   return(
     <p>
@@ -37,7 +37,7 @@ const App = () => {
       <Button handleClick={() => setNeutral(neutral + 1)} text="neutral" />
       <Button handleClick={() => setBad(bad + 1)} text="bad" />
       <Header header={subHeader}/>
-      <Feedback feedbackGood={good} feedbackNeutral={neutral} feedbackBad={bad}/>
+      <Stastics feedbackGood={good} feedbackNeutral={neutral} feedbackBad={bad}/>
 
     </div>
   )
