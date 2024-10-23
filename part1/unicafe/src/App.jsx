@@ -10,7 +10,7 @@ const Button = (props) => (
 
 const Stastics = (props) => {
   const count = props.feedbackGood + props.feedbackNeutral + props.feedbackBad
-  return(
+  if (count > 0) return(
     <p>
       Good {props.feedbackGood}{<br/>}
       Neutral {props.feedbackNeutral}{<br/>}
@@ -18,6 +18,11 @@ const Stastics = (props) => {
       All {count}{<br/>}
       Average {(props.feedbackGood - props.feedbackBad) / count}{<br/>}
       Positive {props.feedbackGood / count * 100}%
+    </p>
+  )
+  return(
+    <p>
+      No feedback given
     </p>
   )
 }
