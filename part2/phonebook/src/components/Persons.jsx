@@ -1,9 +1,12 @@
-const Persons = ({ person }) => {
+import Person from './Person'
+
+const Persons = ({filterPersons}) => {
     return (
-      <>
-        {person.name} {person.number}
-        <br></br>
-      </>
+      <div>
+        {filterPersons?.map(person =>
+          <Person key={person.id} person={person} />
+        )}
+      </div>
     )
   }
   
