@@ -36,14 +36,22 @@ const App = () => {
         number: newNumber
       }
       personService
-      .create(personObject)
-      .then(returnedNote => {
-        setPersons(persons.concat(returnedNote))
-        setNewName('')
-        setNewNumber('')
-      })
+        .create(personObject)
+        .then(returnedNote => {
+          setPersons(persons.concat(returnedNote))
+          setNewName('')
+          setNewNumber('')
+        })
 
     }
+  }
+
+  const handleDeletePerson = (id) => {
+    personService
+      .remove(id)
+      .then(() => {
+        setPersons(persons.filter((person) => person.id !== id))
+      })
   }
 
   const handlePersonChange = (event) => {
@@ -78,7 +86,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons filterPersons={filterPersons} />
+      <Persons filterPersons={filterPersons} handleDeletePerson={handleDeletePerson} />
       
     </div>
     
