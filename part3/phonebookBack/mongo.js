@@ -1,3 +1,4 @@
+/*
 const mongoose = require('mongoose')
 let retrievePersons = false;
 let addPerson = false;
@@ -48,4 +49,4 @@ else if (retrievePersons){
         })
         mongoose.connection.close()
     })
-}
+*/

@@ -1,55 +1,30 @@
 const express = require('express')
+const app = express()
+require('dotenv').config()
 const morgan = require('morgan')
+
+const Person = require('./models/person')
+
+app.use(express.static('dist'))
+
+morgan.token('request-body', (req) => JSON.stringify(req.body))
+
 const cors = require('cors')
 
-const app = express()
+app.use(cors())
 
 app.use(express.json())
-app.use(cors())
-app.use(express.static('dist'))
-morgan.token('request-body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :request-body'))
 
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    },
-    { 
-      "id": "5",
-      "name": "Shrek", 
-      "number": "05-1945-192456"
-    },
-    { 
-      "id": "6",
-      "name": "Hulk Hogan", 
-      "number": "68-1956-2065829"
-    },
-    { 
-      "id": "7",
-      "name": "Phil McCracken", 
-      "number": "63-87564-9757934"
-    },
-]
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(person => {
+        response.json(person)
+    })
 })
 
 app.get('/info', (request, response) => {
@@ -73,40 +48,36 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
+    //persons = persons.filter(person => person.id !== id)
 
     response.status(204).end()
 })
 
-const generateId = () => {
-    return Math.floor(Math.random() * 99999);
-}
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    console.log(body)
-    if (!body.name || !body.number) {
-        return response.status(400).json({
-            error: 'name and/or number missing'
-        })
-    }
 
+    if (body.name === undefined || body.number === undefined) {
+        return response.status(400).json({error: 'name and/or number missing'})
+    }
+    /*
     if (persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())){
         return response.status(400).json({
             error: 'name must be unique'
         })
     }
+    */
 
-    const person ={
-        id: generateId(),
+    const person = new Person({
         name: body.name,
         number: body.number
-    }
+    })
 
-    persons = persons.concat(person)
-    response.json(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+      })
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
