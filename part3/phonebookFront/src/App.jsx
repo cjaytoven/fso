@@ -36,7 +36,7 @@ const App = () => {
     if (existingPerson) {
       if (confirm(`${newName} is already added to phonebook, replace the old number with the new one?`)) {
         message = ` Successfully updated ${newName}'s number`
-        setNotificationMessageType('error');
+        setNotificationMessageType('success');
         const updatedPerson = {...existingPerson, number: newNumber}
         personService
           .update(existingPerson.id, updatedPerson)
