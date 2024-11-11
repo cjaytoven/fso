@@ -31,24 +31,23 @@ const App = () => {
     event.preventDefault()
     
     const existingPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase());
-    let message = ''
     
     if (existingPerson) {
       if (confirm(`${newName} is already added to phonebook, replace the old number with the new one?`)) {
-        message = ` Successfully updated ${newName}'s number`
-        setNotificationMessageType('success');
         const updatedPerson = {...existingPerson, number: newNumber}
         personService
           .update(existingPerson.id, updatedPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson));
+            handleMessageChange(`Successfully updated ${newName}'s number`, 'success')
+          })
+          .catch (error => {
+            handleMessageChange(error.response.data.error, 'error')
           })
       }
     }
 
     else{
-      message = `Successfully added ${newName}`
-      setNotificationMessageType('success');
       const personObject = {
         name: newName,
         number: newNumber
@@ -57,12 +56,14 @@ const App = () => {
         .create(personObject)
         .then(returnedNote => {
           setPersons(persons.concat(returnedNote))
+          handleMessageChange(`Successfully added ${newName}`, 'success')     
+        })
+        .catch(error => {
+          handleMessageChange(error.response.data.error, 'error')
         })
     }
-
     setNewName('')
     setNewNumber('')
-    setNotificationMessage(message)
     setTimeout(() => {
       setNotificationMessage(null)
     }, 5000)
@@ -73,15 +74,15 @@ const App = () => {
       .remove(id)
       .then(() => {
         setPersons(persons.filter((person) => person.id !== id))
+        handleMessageChange(`${name} has been deleted`, 'success')
       })
       .catch(error => {
-        setNotificationMessage(`${name} has already been deleted`)
-        setNotificationMessageType('error');
-        setTimeout(() => {
-          setNotificationMessage(null)
-        }, 5000)
+        handleMessageChange(`${name} has already been deleted`, 'error')
         setPersons(persons.filter(person => person.id !== id))
       })
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000)
   }
 
   const handlePersonChange = (event) => {
@@ -95,6 +96,11 @@ const App = () => {
 
   const handleFilterChange = (event) => {
     setNewFilter(event.target.value.toLowerCase())
+  }
+
+  const handleMessageChange = (message, type) => {
+    setNotificationMessage(message)
+    setNotificationMessageType(type);
   }
   
   const filterPersons = newFilter ?
